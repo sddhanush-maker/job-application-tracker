@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f8fc">
+    <meta name="description" content="A clear, simple dashboard for tracking your job applications.">
+    <title>JobTrack · Application workspace</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/api.js" defer></script>
+    <script src="js/app.js" defer></script>
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+        <div class="sidebar-brand-row">
+            <a class="brand" href="#dashboard" aria-label="JobTrack dashboard">
+                <span class="brand-mark" aria-hidden="true">J</span>
+                <span>jobtrack<span class="brand-period">.</span></span>
+            </a>
+            <button class="icon-button mobile-close-button" id="mobile-close-menu" type="button" aria-label="Close navigation">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+            </button>
+        </div>
+
+        <p class="nav-label">WORKSPACE</p>
+        <nav class="primary-nav">
+            <button class="nav-link is-active" type="button" data-view="dashboard" aria-current="page">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="8" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="15" width="7" height="6" rx="1.5"/></svg>
+                <span>Dashboard</span>
+            </button>
+            <button class="nav-link" type="button" data-view="applications">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 5V3h8v2M3 10h18M9 14h6"/></svg>
+                <span>My applications</span>
+                <span class="nav-count" id="nav-count">0</span>
+            </button>
+        </nav>
+
+        <p class="nav-label nav-label-spaced">QUICK ACTION</p>
+        <button class="sidebar-add" id="sidebar-add" type="button">
+            <span class="plus-icon" aria-hidden="true">+</span>
+            <span>Add application</span>
+        </button>
+
+        <div class="sidebar-footer">
+            <span class="workspace-avatar" aria-hidden="true">JW</span>
+            <span class="workspace-copy"><strong>Personal workspace</strong><small>Your career, organized</small></span>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <button class="mobile-menu-button icon-button" id="mobile-menu" type="button"
+                    aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <div class="topbar-spacer"></div>
+            <span class="today-label" id="today-label"></span>
+            <button class="icon-button refresh-button" id="refresh-button" type="button" aria-label="Refresh applications">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.6 9a7 7 0 0 1 11.6-2L20 12M4 12l2.8 5a7 7 0 0 0 11.6-2"/></svg>
+            </button>
+            <button class="button button-primary topbar-add" id="topbar-add" type="button">
+                <span aria-hidden="true">+</span> Add application
+            </button>
+        </header>
+
+        <div class="page-container">
+            <div class="page-heading">
+                <div>
+                    <p class="eyebrow">YOUR CAREER JOURNEY</p>
+                    <h1 id="page-title">Dashboard</h1>
+                    <p class="page-subtitle" id="page-subtitle">A little progress each day adds up to big results.</p>
+                </div>
+                <span class="date-chip" id="header-date"></span>
+            </div>
+
+            <div class="feedback-banner" id="backend-error" role="alert" hidden>
+                <div class="feedback-icon" aria-hidden="true">!</div>
+                <div class="feedback-copy">
+                    <strong>Could not load your applications</strong>
+                    <span id="backend-error-message">Check that the backend is running, then try again.</span>
+                </div>
+                <button class="button button-subtle" id="retry-button" type="button">Try again</button>
+            </div>
+
+            <section id="dashboard-view" class="view-panel" aria-labelledby="stats-heading">
+                <div class="section-heading stats-heading">
+                    <div>
+                        <h2 id="stats-heading">Application overview</h2>
+                        <p>Your search at a glance</p>
+                    </div>
+                    <span class="updated-label" id="updated-label">Live from your workspace</span>
+                </div>
+
+                <div class="stats-grid" id="stats-grid" aria-live="polite">
+                    <article class="stat-card">
+                        <div class="stat-icon stat-icon-violet" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 4V2m8 2V2M4 9h16M8 13h3m-3 4h8"/></svg></div>
+                        <span class="stat-label">Total applications</span><strong class="stat-value" data-stat="total">—</strong>
+                        <span class="stat-footnote">Across your job search</span>
+                    </article>
+                    <article class="stat-card">
+                        <div class="stat-icon stat-icon-blue" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+                        <span class="stat-label">Applied</span><strong class="stat-value" data-stat="applied">—</strong>
+                        <span class="stat-footnote">Applications submitted</span>
+                    </article>
+                    <article class="stat-card">
+                        <div class="stat-icon stat-icon-amber" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+                        <span class="stat-label">Interviewing</span><strong class="stat-value" data-stat="interviewing">—</strong>
+                        <span class="stat-footnote">Conversations in progress</span>
+                    </article>
+                    <article class="stat-card">
+                        <div class="stat-icon stat-icon-green" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg></div>
+                        <span class="stat-label">Offers</span><strong class="stat-value" data-stat="offers">—</strong>
+                        <span class="stat-footnote">Good things ahead</span>
+                    </article>
+                    <article class="stat-card">
+                        <div class="stat-icon stat-icon-rose" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/></svg></div>
+                        <span class="stat-label">Rejected</span><strong class="stat-value" data-stat="rejected">—</strong>
+                        <span class="stat-footnote">Keep moving forward</span>
+                    </article>
+                </div>
+
+                <section class="content-card recent-card" aria-labelledby="recent-heading">
+                    <div class="card-heading">
+                        <div>
+                            <h2 id="recent-heading">Recent applications</h2>
+                            <p>Your latest opportunities</p>
+                        </div>
+                        <button class="text-button" type="button" data-view="applications">
+                            View all <span aria-hidden="true">→</span>
+                        </button>
+                    </div>
+                    <div class="table-scroll">
+                        <table class="applications-table">
+                            <thead><tr><th scope="col">Company</th><th scope="col">Job title</th><th scope="col">Applied</th><th scope="col">Location</th><th scope="col">Status</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
+                            <tbody id="recent-table-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="table-state" id="recent-state" hidden></div>
+                </section>
+            </section>
+
+            <section id="applications-view" class="view-panel" aria-labelledby="applications-heading" hidden>
+                <section class="content-card applications-card">
+                    <div class="card-heading applications-card-heading">
+                        <div>
+                            <h2 id="applications-heading">All applications</h2>
+                            <p>Search, organize, and keep every opportunity moving.</p>
+                        </div>
+                        <button class="button button-primary" id="list-add" type="button"><span aria-hidden="true">+</span> Add application</button>
+                    </div>
+                    <div class="filter-toolbar">
+                        <label class="search-field">
+                            <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg>
+                            <span class="sr-only">Search company or job title</span>
+                            <input id="search-input" type="search" placeholder="Search company or job title…" autocomplete="off">
+                        </label>
+                        <label class="filter-control">
+                            <span class="sr-only">Filter by status</span>
+                            <select id="status-filter">
+                                <option value="">All statuses</option>
+                                <option value="SAVED">Saved</option>
+                                <option value="APPLIED">Applied</option>
+                                <option value="ASSESSMENT">Assessment</option>
+                                <option value="INTERVIEWING">Interviewing</option>
+                                <option value="OFFERED">Offered</option>
+                                <option value="REJECTED">Rejected</option>
+                                <option value="WITHDRAWN">Withdrawn</option>
+                            </select>
+                        </label>
+                        <label class="filter-control sort-control">
+                            <span class="sr-only">Sort applications</span>
+                            <select id="sort-filter">
+                                <option value="date-desc">Newest first</option>
+                                <option value="date-asc">Oldest first</option>
+                                <option value="company-asc">Company A–Z</option>
+                                <option value="company-desc">Company Z–A</option>
+                            </select>
+                        </label>
+                        <button class="clear-filters" id="clear-filters" type="button">Clear filters</button>
+                    </div>
+                    <div class="results-meta"><span id="results-count" aria-live="polite"></span><span>Sorted on this device</span></div>
+                    <div class="table-scroll">
+                        <table class="applications-table">
+                            <thead><tr><th scope="col">Company</th><th scope="col">Job title</th><th scope="col">Applied</th><th scope="col">Location</th><th scope="col">Status</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
+                            <tbody id="applications-table-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="table-state empty-state" id="applications-state" hidden></div>
+                </section>
+            </section>
+
+            <footer class="page-footer"><span>Made for your next opportunity.</span><span>JobTrack <span class="brand-period">·</span> Personal workspace</span></footer>
+        </div>
+    </main>
+</div>
+
+<div class="mobile-scrim" id="mobile-scrim" hidden></div>
+
+<dialog class="app-dialog form-dialog" id="application-dialog" aria-labelledby="form-title">
+    <form id="application-form" novalidate>
+        <div class="dialog-heading">
+            <div>
+                <p class="eyebrow">YOUR NEXT OPPORTUNITY</p>
+                <h2 id="form-title">Add application</h2>
+                <p id="form-description">Keep the details together so you can focus on what’s next.</p>
+            </div>
+            <button class="icon-button dialog-close" id="close-form" type="button" aria-label="Close form">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+            </button>
+        </div>
+        <div class="form-api-error" id="form-api-error" role="alert" hidden></div>
+        <div class="form-grid">
+            <label class="form-field">
+                <span>Company name <span class="required-mark" aria-hidden="true">*</span></span>
+                <input id="company-name" name="companyName" type="text" maxlength="150" required autocomplete="organization" placeholder="e.g. Acme Inc.">
+                <small class="field-error" data-error-for="companyName"></small>
+            </label>
+            <label class="form-field">
+                <span>Job title <span class="required-mark" aria-hidden="true">*</span></span>
+                <input id="job-title" name="jobTitle" type="text" maxlength="150" required placeholder="e.g. Product Designer">
+                <small class="field-error" data-error-for="jobTitle"></small>
+            </label>
+            <label class="form-field">
+                <span>Application date <span class="required-mark" aria-hidden="true">*</span></span>
+                <input id="application-date" name="applicationDate" type="date" required>
+                <small class="field-error" data-error-for="applicationDate"></small>
+            </label>
+            <label class="form-field">
+                <span>Status <span class="required-mark" aria-hidden="true">*</span></span>
+                <select id="application-status" name="status" required>
+                    <option value="SAVED">Saved</option>
+                    <option value="APPLIED">Applied</option>
+                    <option value="ASSESSMENT">Assessment</option>
+                    <option value="INTERVIEWING">Interviewing</option>
+                    <option value="OFFERED">Offered</option>
+                    <option value="REJECTED">Rejected</option>
+                    <option value="WITHDRAWN">Withdrawn</option>
+                </select>
+                <small class="field-error" data-error-for="status"></small>
+            </label>
+            <label class="form-field form-field-full">
+                <span>Job description</span>
+                <textarea id="job-description" name="jobDescription" rows="3" maxlength="10000" placeholder="A few notes about the role…"></textarea>
+                <small class="field-error" data-error-for="jobDescription"></small>
+            </label>
+            <label class="form-field">
+                <span>Location</span>
+                <input id="job-location" name="jobLocation" type="text" maxlength="150" placeholder="e.g. Remote, New York">
+                <small class="field-error" data-error-for="jobLocation"></small>
+            </label>
+            <label class="form-field">
+                <span>Job URL</span>
+                <input id="job-url" name="jobUrl" type="url" maxlength="2048" placeholder="https://example.com/job">
+                <small class="field-hint">Use a link beginning with http:// or https://.</small>
+                <small class="field-error" data-error-for="jobUrl"></small>
+            </label>
+            <label class="form-field form-field-full">
+                <span>Notes</span>
+                <textarea id="application-notes" name="notes" rows="3" maxlength="10000" placeholder="Recruiter contact, follow-up reminders, or anything useful…"></textarea>
+                <small class="field-error" data-error-for="notes"></small>
+            </label>
+        </div>
+        <div class="dialog-actions">
+            <span class="required-note"><span class="required-mark">*</span> Required fields</span>
+            <div class="action-buttons">
+                <button class="button button-secondary" id="cancel-form" type="button">Cancel</button>
+                <button class="button button-primary" id="save-button" type="submit">
+                    <span class="save-label">Save application</span>
+                    <span class="save-spinner" aria-hidden="true" hidden></span>
+                </button>
+            </div>
+        </div>
+    </form>
+</dialog>
+
+<dialog class="app-dialog details-dialog" id="details-dialog" aria-labelledby="details-title">
+    <div class="dialog-heading">
+        <div>
+            <p class="eyebrow">APPLICATION DETAILS</p>
+            <h2 id="details-title"></h2>
+            <p id="details-company"></p>
+        </div>
+        <button class="icon-button dialog-close" id="close-details" type="button" aria-label="Close details">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+    </div>
+    <div id="details-content" class="details-content"></div>
+    <div class="dialog-actions">
+        <span></span>
+        <div class="action-buttons">
+            <button class="button button-secondary" id="details-close-button" type="button">Close</button>
+            <button class="button button-primary" id="details-edit-button" type="button">Edit application</button>
+        </div>
+    </div>
+</dialog>
+
+<div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
